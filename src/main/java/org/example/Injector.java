@@ -5,11 +5,42 @@ import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.Properties;
 
+/**
+ * Класс для автоматического внедрения зависимостей в объекты.
+ * <p>
+ * Использует механизмы рефлексии для поиска полей, помеченных аннотацией {@link AutoInjectable},
+ * и инициализирует их экземплярами классов, указанных в файле конфигурации.
+ * </p>
+ *
+ * <p><b>Пример использования:</b></p>
+ * <pre>
+ * {@code
+ * SomeBean bean = new SomeBean();
+ * Injector injector = new Injector();
+ * SomeBean injectedBean = injector.inject(bean);
+ * injectedBean.foo(); // Работает без NullPointerException
+ * }
+ * </pre>
+ *
+ * @see AutoInjectable
+ * @author ilabe
+ * @version 1.0
+ */
 public class Injector
 {
 
     private final Properties properties;
 
+    /**
+     * Загружает свойства из файла конфигурации.
+     * <p>
+     * Файл должен находиться в директории resources и иметь имя "properties".
+     * Формат файла: полное_имя_интерфейса=полное_имя_класса_реализации
+     * </p>
+     *
+     * @return объект Properties с загруженными настройками
+     * @throws RuntimeException если файл конфигурации не найден или произошла ошибка чтения
+     */
     private Properties loadProperties()
     {
         Properties props = new Properties();
@@ -29,6 +60,17 @@ public class Injector
         return props;
     }
 
+    /**
+     * Внедряет зависимость в конкретное поле объекта.
+     * <p>
+     * Проверяет, что тип поля является интерфейсом, находит соответствующую реализацию
+     * в конфигурации, создает экземпляр и устанавливает значение поля.
+     * </p>
+     *
+     * @param obj объект, содержащий поле для внедрения
+     * @param field поле, которое нужно инициализировать
+     * @throws RuntimeException если поле не является интерфейсом или произошла ошибка внедрения
+     */
     private void injectField(Object obj, Field field)
     {
         try
@@ -50,6 +92,13 @@ public class Injector
         }
     }
 
+    /**
+     * Находит имя класса реализации для заданного интерфейса в конфигурации.
+     *
+     * @param interfaceType тип интерфейса, для которого нужно найти реализацию
+     * @return полное имя класса реализации
+     * @throws RuntimeException если реализация не найдена в конфигурации
+     */
     private String findImplementation(Class<?> interfaceType)
     {
         String key = interfaceType.getName();
@@ -61,6 +110,16 @@ public class Injector
         return implementation.trim();
     }
 
+    /**
+     * Создает экземпляр класса по его имени с помощью рефлексии.
+     * <p>
+     * Использует конструктор по умолчанию для создания экземпляра.
+     * </p>
+     *
+     * @param className полное имя класса для создания экземпляра
+     * @return экземпляр указанного класса
+     * @throws RuntimeException если не удалось создать экземпляр класса
+     */
     private Object createInstance(String className)
     {
         try
@@ -74,6 +133,18 @@ public class Injector
         }
     }
 
+    /**
+     * Внедряет зависимости в переданный объект.
+     * <p>
+     * Сканирует все поля объекта на наличие аннотации {@link AutoInjectable}
+     * и инициализирует их соответствующими реализациями из конфигурации.
+     * </p>
+     *
+     * @param obj объект, в который нужно внедрить зависимости
+     * @param <T> тип объекта
+     * @return тот же объект с внедренными зависимостями
+     * @throws IllegalArgumentException если переданный объект равен null
+     */
     public <T> T inject(T obj)
     {
         if (obj == null)
@@ -89,11 +160,25 @@ public class Injector
         return obj;
     }
 
+    /**
+     * Создает новый экземпляр Injector и загружает конфигурацию.
+     * <p>
+     * Конфигурация загружается из файла "properties" в директории resources.
+     * </p>
+     */
     public Injector()
     {
         this.properties = loadProperties();
     }
 
+    /**
+     * Возвращает копию загруженных свойств конфигурации.
+     * <p>
+     * Метод предназначен в основном для тестирования.
+     * </p>
+     *
+     * @return копия объекта Properties с загруженной конфигурацией
+     */
     public Properties getProperties()
     {
         return new Properties(properties);

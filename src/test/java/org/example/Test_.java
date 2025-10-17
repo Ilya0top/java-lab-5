@@ -7,6 +7,40 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Комплексные тесты для системы Dependency Injection.
+ * <p>
+ * Набор тестов проверяет корректность работы всех компонентов DI системы:
+ * аннотации {@link AutoInjectable}, класса {@link Injector} и связанных компонентов.
+ * Тесты охватывают основные сценарии использования, обработку ошибок и пограничные случаи.
+ * </p>
+ *
+ * <p><b>Тестируемые аспекты:</b></p>
+ * <ul>
+ *   <li>Корректность внедрения зависимостей в аннотированные поля</li>
+ *   <li>Соответствие типов и реализаций внедряемых объектов</li>
+ *   <li>Работоспособность методов после внедрения зависимостей</li>
+ *   <li>Обработка граничных случаев (null, отсутствие конфигурации)</li>
+ *   <li>Наличие и корректность аннотаций {@link AutoInjectable}</li>
+ *   <li>Изоляция зависимостей между разными объектами</li>
+ *   <li>Загрузка конфигурации из properties файла</li>
+ * </ul>
+ *
+ * <p><b>Используемые компоненты:</b></p>
+ * <ul>
+ *   <li>{@link Injector} - основной класс для внедрения зависимостей</li>
+ *   <li>{@link AutoInjectable} - аннотация для пометки полей</li>
+ *   <li>{@link SomeBean} - класс с внедряемыми зависимостями</li>
+ *   <li>{@link SomeInterface}, {@link SomeOtherInterface} - интерфейсы зависимостей</li>
+ *   <li>{@link SomeImpl}, {@link OtherImpl}, {@link SODoer} - реализации интерфейсов</li>
+ * </ul>
+ *
+ * @see Injector
+ * @see AutoInjectable
+ * @see SomeBean
+ * @author ilabe
+ * @version 1.0
+ */
 public class Test_
 {
 
